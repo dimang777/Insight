@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request
 import sys
-sys.path.insert(0,'../MainProject_v2')
+sys.path.insert(0,'../v2')
 import redwine_v2
 
 # Create the application object
 app = Flask(__name__)
-rw = redwine_v2.RedWine('../MainProject_v2/rw_df_mvp_v2.xlsx')
+rw = redwine_v2.RedWine('../v2/rw_df_mvp_v2.xlsx')
 
 @app.route('/',methods=["GET","POST"])
 def home_page():
