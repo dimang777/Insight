@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import itertools
 
 def gower_numer_dist(df, category, idx1, idx2):
 # numerical distance (dissimilarity) 
@@ -33,29 +32,14 @@ def gower_dist(df, idx):
 
 rw_df_mvp = pd.read_excel('rw_df_mvp.xlsx')
 
-# sample space
-    
-# =============================================================================
-# for idx, pair in enumerate(itertools.combinations(range(len(rw_df_mvp)),2)):
-#     print(idx)
-#     columns = ('Num0', 'Num1', 'Gower_dist')
-#     data = {}   
-#     gower_dist_result = gower_dist(rw_df_mvp, pair)
-#     
-#     data[columns[0]] = [pair[0]]
-#     data[columns[1]] = [pair[1]]
-#     data[columns[2]] = [gower_dist]
-#     
-#     if idx == 0:
-#         gower_dist_df = pd.DataFrame(data)
-#     else:
-#         gower_dist_df = pd.concat([gower_dist_df, pd.DataFrame(data)])        
-# 
-# =============================================================================
+
+
 
 columns_to_show = ['Name', 'Price', 'Sugar', 'Alcohol', 'Sweetness', 'Style1', 'Style2', 'Variety']
 
 product_idx = 1
+
+int(rw_df_mvp[rw_df_mvp['LCBO_id']=='L419945'].index[0])
 print(rw_df_mvp.loc[product_idx, columns_to_show])
 
 for idx in range(len(rw_df_mvp)):

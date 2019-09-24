@@ -14,10 +14,14 @@ import pandas as pd
 # sub-histogram of city with in a country
 
 # rw_df = pd.read_excel('tmp.xlsx', index_col=0)
+# Version 1
+# rw_df = pd.read_excel('RW_data_wofeaturedwines_UTF-8.xlsx')
 
-rw_df = pd.read_excel('RW_data_wofeaturedwines_UTF-8.xlsx')
+# Version 2
+rw_df = pd.read_excel('rw_v3_pic_and_url.xlsx')
 
-data_count = rw_df.count(axis = 0) 
+data_count = rw_df.count(axis = 0)
+
 
 hist = rw_df.hist(column = 'Sugar', bins = 20)
 
@@ -67,46 +71,82 @@ for count in range(10):
 
 
 # drop nans
-    
-rw_df_bool = rw_df.notnull()
-full_rows_bool = rw_df_bool[rw_df.columns[0]]
-sum(full_rows_bool)
-sum(rw_df_bool[rw_df.columns[6]])
-full_rows_bool = full_rows_bool & rw_df_bool[rw_df.columns[3]]
-sum(full_rows_bool)
-sum(full_rows_bool & rw_df_bool[rw_df.columns[6]])
-full_rows_bool = full_rows_bool & rw_df_bool[rw_df.columns[6]]
+# Version 1
+# =============================================================================
+# rw_df_bool = rw_df.notnull()
+# full_rows_bool = rw_df_bool[rw_df.columns[0]]
+# sum(full_rows_bool)
+# sum(rw_df_bool[rw_df.columns[6]])
+# full_rows_bool = full_rows_bool & rw_df_bool[rw_df.columns[3]]
+# sum(full_rows_bool)
+# sum(full_rows_bool & rw_df_bool[rw_df.columns[6]])
+# full_rows_bool = full_rows_bool & rw_df_bool[rw_df.columns[6]]
+# 
+# for idx in range(1,rw_df.shape[1]-2): # number of columns
+#     full_rows_bool = full_rows_bool & rw_df_bool[rw_df.columns[idx]]
+#     
+# sum(full_rows_bool) # Total 2890
+# =============================================================================
+
+# Version 2
+# Cleaning moved to S4_cleandataanalysis
+# =============================================================================
+# Vars_to_keep = ['LCBO_id',
+# 'Price',
+# 'Name',
+# 'Description',
+# 'Alcohol',
+# 'Madein_city',
+# 'Madein_country',
+# 'Sugar',
+# 'Style1',
+# 'Style2',
+# 'Variety',
+# 'URL',
+# 'Pic_src']
+# 
+# rw_df_bool = rw_df.notnull()
+# full_rows_bool = rw_df_bool[Vars_to_keep[0]]
+# 
+# for idx in range(1,len(Vars_to_keep)): # number of columns to keep
+#     full_rows_bool = full_rows_bool & rw_df_bool[Vars_to_keep[idx]]
+# 
+# sum(full_rows_bool) # Total 2890
+#
+# =============================================================================
 
 
-for idx in range(1,rw_df.shape[1]-2): # number of columns
-    full_rows_bool = full_rows_bool & rw_df_bool[rw_df.columns[idx]]
-    
-sum(full_rows_bool) # Total 2890
-
-rw_df_full_clean_v1 = rw_df[full_rows_bool].drop(columns=['Featured_wines', 'Recomm_foods'])
-
-rw_df_full_clean_v1.shape
-
+# Version 1
+# =============================================================================
+# rw_df_full_clean_v1 = rw_df[full_rows_bool].drop(columns=['Featured_wines', 'Recomm_foods'])
+# rw_df_full_clean_v1.shape
 # rw_df_full_clean_v1.to_excel('rw_df_full_clean_v1.xlsx', index=False)
+# 
+# =============================================================================
+# Version 2
+# This part of the code is combined in S4_cleandataanalysis.py
+# i.e., dropping ['Featured_wines', 'Recomm_foods'] done with other variables
 
 
 # features to use
-# price
-# alcohol
-# sugar
-# sweetness
-# style1
-# style2
-# variety
+# LCBO ID
+# Price
+# Name
+# Description
+# Size
+# Alcohol
+# Madein_city
+# Madein_country
+# Brand
+# Sugar
+# Style1
+# Style2
+# Variety
+# URL
+# Pic_src
 
 # NOT USED
-# LCBO ID
-# name
-# description
-# size
-# city
-# country
-# brand
-# featured wines
-# recommended food
+# Sweetness
+# Featured_wines
+# Recomm_foods
 

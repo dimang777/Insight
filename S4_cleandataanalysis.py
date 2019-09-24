@@ -3,24 +3,26 @@ import numpy as np
 import itertools
 
 # features to use
-# price
-# alcohol
-# sugar
-# sweetness
-# style1
-# style2
-# variety
+# LCBO ID
+# Price
+# Name
+# Description
+# Size
+# Alcohol
+# Madein_city
+# Madein_country
+# Brand
+# Sugar
+# Style1
+# Style2
+# Variety
+# URL
+# Pic_src
 
 # NOT USED
-# LCBO ID
-# name
-# description
-# size
-# city
-# country
-# brand
-# featured wines
-# recommended food
+# Sweetness
+# Featured_wines
+# Recomm_foods
 
 # rw_df_full_clean_v1
 # columns: 'LCBO_id', 'Price', 'Name', 'Description', 'Size', 'Alcohol',
@@ -31,8 +33,8 @@ rw_df_full_clean_v1 = pd.read_excel('rw_df_full_clean_v1.xlsx')
 # Features used: 'Price', 'Alcohol', 'Sugar', 'Sweetness', 'Style1', 'Style2', 'Variety'
 # LCBO_id is used as index
 rw_df_full_clean_v1.columns
-rw_df_mvp = rw_df_full_clean_v1.drop(columns = ['Description', 'Size', 'Madein_city', 'Madein_country', 'Brand'])
-rw_df_mvp.set_index('LCBO_id')
+rw_df_mvp = rw_df_full_clean_v1.drop(columns = ['Sweetness', 'Featured_wines', 'Recomm_foods'])
+# rw_df_mvp.set_index('LCBO_id') # Not really efficient
 
 
 listof_prices = rw_df_mvp['Price'].value_counts()
@@ -63,5 +65,5 @@ listof_variety = rw_df_mvp['Variety'].value_counts()
 numofvariety = len(listof_variety)
 hist = rw_df_mvp['Variety'].value_counts().plot(kind='bar')
 
-# rw_df_mvp.to_excel('rw_df_mvp.xlsx', index=False)
+rw_df_mvp.to_excel('rw_df_mvp.xlsx', index=False)
 

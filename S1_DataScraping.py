@@ -3,7 +3,8 @@ import requests
 from bs4 import BeautifulSoup as BS
 import pandas as pd
 import numpy as np
-from fake_useragent import UserAgent
+import io
+import time
 
 def find_class(soup, class_name):
     content = soup.find(class_ = class_name)
@@ -245,14 +246,39 @@ def scrape_page_raw(url):
     # Output: soup - html document of the entire webpage
     # Source: https://stackoverflow.com/questions/44865673/access-denied-while-scraping
     # Source: https://stackoverflow.com/questions/27652543/how-to-use-python-requests-to-fake-a-browser-visit
-    ua = UserAgent()
+    # ua = UserAgent()
     # print(ua.chrome)
-    header = {'User-Agent':str(ua.chrome)}
+    # header = {'User-Agent':str(ua.chrome)}
     # print(header)
     # agent = {"User-Agent":'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36'}
-    page = requests.get(url, headers=header)
+    delays = [x / 100 for x in range(100,400)]
+    delay = np.random.choice(delays)
+    time.sleep(delay)
+    user_agent = get_random_ua()
+    user_agent = user_agent[:-1]
+    headers = {
+        'user-agent': user_agent,
+    }
+    page = requests.get(url,headers=headers)
 
-    return BS(page.text, 'html.parser') 
+    return BS(page.text, 'html.parser')
+
+def get_random_ua():
+    random_ua = ''
+    ua_file = 'ua_file.txt'
+    try:
+        with open(ua_file) as f:
+            lines = f.readlines()
+        if len(lines) > 0:
+            prng = np.random.RandomState()
+            index = prng.permutation(len(lines) - 1)
+            idx = np.asarray(index, dtype=np.integer)[0]
+            random_ua = lines[int(idx)]
+    except Exception as ex:
+        print('Exception in random_ua')
+        print(str(ex))
+    finally:
+        return random_ua
 
 def format_data_df(values):
     # Given a tuple of values, format it into dict so that it can be appended to df
@@ -278,7 +304,33 @@ def format_data_df(values):
     for i, column in enumerate(columns):
         data[column] = [values[i]]
     return data
-   
+
+def format_data_df_v2(values):
+    # Given a tuple of values, format it into dict so that it can be appended to df
+    # Input: tuple of values
+    # Output: formatted dict
+    columns = ( 'LCBO_id', 
+                'Price', 
+                'Name',
+                'Description',
+                'Size',
+                'Alcohol',
+                'Madein_city',
+                'Madein_country',
+                'Brand',
+                'Sugar',
+                'Sweetness',
+                'Style1',
+                'Style2',
+                'Variety',
+                'Pic_src',
+                'Featured_wines',
+                'Recomm_foods')
+    data = {}
+    for i, column in enumerate(columns):
+        data[column] = [values[i]]
+    return data
+
 def scrape_product(url, index = -1):
     # Given the product url, get values for the df element
     # Input: url of the product to scrape, index of the product - used to save the html file locally
@@ -286,10 +338,15 @@ def scrape_product(url, index = -1):
     
     # Get html of the url
     soup = scrape_page_raw(url)
-    
+
     with open(str(index)+'.html', "w", encoding='utf-8') as file:
         file.write(str(soup))
-    
+
+    return parse_info(soup)
+
+
+def parse_info(soup):
+
     # Get relevant sections
     LCBO_html, price_html, name_html, description_html, product_img_html, product_details_html, featured_wines_html, food_recomms_html = \
     find_html_sections(soup)
@@ -301,152 +358,56 @@ def scrape_product(url, index = -1):
     description = get_info(description_html, 'description')
     size, alcohol, madein_city, madein_country, brand, sugar, sweetness, style1, style2, variety = \
         get_details(product_details_html)
+    pic_src = get_pic_src(soup)
     featured_LCBO_id = get_featured_wines(featured_wines_html) # Featured wines change after each loading
     recomm_foods = get_recomm_foods(food_recomms_html) # sometimes there is no suggested foods
     
-    return (LCBO_id, price, name, description, size, alcohol, madein_city, madein_country, brand, sugar, sweetness, style1, style2, variety, featured_LCBO_id, recomm_foods)
+    return (LCBO_id, price, name, description, size, alcohol, madein_city, madein_country, brand, sugar, sweetness, style1, style2, variety, pic_src, featured_LCBO_id, recomm_foods)
 
+def read_saved_soup(file_name):
+    f = io.open(file_name, mode="r", encoding="utf-8")
+    return BS(f.read())
+
+def get_pic_src(soup):
+    # Get the web source of the picture of the wine product
+    images = soup.findAll('img')
+    return 'https://www.lcbo.com' + images[3]['src']
 
 if __name__ == '__main__':
-    url1 = 'https://www.lcbo.com/webapp/wcs/stores/servlet/en/lcbo/red-wine-14001/folonari-valpolicella-classico-doc-828'
-    # soup = scrape_page_raw(url1)
-    values = scrape_product(url1)
-    
-    data = format_data_df(values)
-
-    rw = pd.DataFrame(data)
-    
-    
-    url2 = 'https://www.lcbo.com/webapp/wcs/stores/servlet/en/lcbo/yalumba-coonawarra-cabernet-sauvignon-460667?vmpContextPage=category&vmpContextItem=3074457345616679269&vmpBin=2#.XX_8bmZ7mMo'
-    
-    values = scrape_product(url2)
-    
-    data = format_data_df(values)
-
-    rw = pd.concat([rw, pd.DataFrame(data)])
-    
-    
-    url3 = 'https://www.lcbo.com/webapp/wcs/stores/servlet/en/lcbo/red-wine-14001/domaine-breton-clos-s%C3%A9n%C3%A9chal-2015-780809#.XYJB0WZ7mMo'
-    
-    values = scrape_product(url3)
-    
-    data = format_data_df(values)
-
-    rw = pd.concat([rw, pd.DataFrame(data)])
-    
-    
-    # rw.to_csv('rw.csv', index=False)
-    
-    
     # url1 = 'https://www.lcbo.com/webapp/wcs/stores/servlet/en/lcbo/red-wine-14001/folonari-valpolicella-classico-doc-828'
     # soup = scrape_page_raw(url1)
-        
-    # Use LCBO# as index
-    # Extract relevant html
-    # Product 1
-    # LCBO_html, price_html, name_html, description_html, product_img_html, product_details_html, featured_wines_html, food_recomms_html = \
-    #     find_html_sections(soup)
-    
-    
-    
-    # Get_info
-    # LCBO_id = get_info(LCBO_html, 'id')
-    
-    # price = get_info(price_html, 'price')
-    # name = get_info(name_html, 'name')
-    # description = get_info(description_html, 'description')
-    
-    # size, alcohol, madein_city, madein_country, brand, sugar, sweetness, style1, style2, variety = \
-    #     get_details(product_details_html)
+    soup = read_saved_soup('html_source/0.html')
 
-    # featured_LCBO_id = get_featured_wines(featured_wines_html) # Featured wines change after each loading
-    
-    # recomm_foods = get_recomm_foods(food_recomms_html) # sometimes there is no suggested foods
-    
-    
-# Dataframe                          
-    # columns = ['LCBO_id',
-    #         'Price', 
-    #         'Name',
-    #         'Description',
-    #         'Size',
-    #         'Alcohol',
-    #         'Madein_city',
-    #         'Madein_country',
-    #         'Brand',
-    #         'Sugar',
-    #         'Sweetness',
-    #         'Style1',
-    #         'Style2',
-    #         'Variety',
-    #         'Featured_wines',
-    #         'Recomm_foods',
-    #         ]
-    
-    # data = {'LCBO_id':[LCBO_id],
-    #         'Price':[price], 
-    #         'Name':[name],
-    #         'Description':[description],
-    #         'Size':[size],
-    #         'Alcohol':[alcohol],
-    #         'Madein_city':[madein_city],
-    #         'Madein_country':[madein_country],
-    #         'Brand':[brand],
-    #         'Sugar':[sugar],
-    #         'Sweetness':[sweetness],
-    #         'Style1':[style1],
-    #         'Style2':[style2],
-    #         'Variety':[variety],
-    #         'Featured_wines':[featured_LCBO_id],
-    #         'Recomm_foods':[recomm_foods],
-    #         }    
-    
-   
-    
-    # soup2 = scrape_page_raw(url2)
-    
-    # # Product 2
-    # LCBO_html2, price_html2, name_html2, description_html2, product_img_html2, product_details_html2, featured_wines_html2, food_recomms_html2 = \
-    #     find_html_sections(soup2)    
+    LCBO_html, price_html, name_html, description_html, product_img_html, product_details_html, featured_wines_html, food_recomms_html = \
+    find_html_sections(soup)
 
-    
-    # LCBO_id2 = get_info(LCBO_html2, 'id')
-    # price2 = get_info(price_html2, 'price')
-    # name2 = get_info(name_html2, 'name')
-    # description2 = get_info(description_html2, 'description')
-    
-    # size2, alcohol2, madein_city2, madein_country2, brand2, sugar2, sweetness2, style1_2, style2_2, variety2 = \
-    #     get_details(product_details_html2)
-    # featured_LCBO_id2 = get_featured_wines(featured_wines_html2)
-    # recomm_foods2 = get_recomm_foods(food_recomms_html2)
+    values = parse_info(soup)
 
+    # values = scrape_product(url1)
+    
+    data = format_data_df_v2(values)
+
+    rw = pd.DataFrame(data)
+
+
+
+    # url2 = 'https://www.lcbo.com/webapp/wcs/stores/servlet/en/lcbo/yalumba-coonawarra-cabernet-sauvignon-460667?vmpContextPage=category&vmpContextItem=3074457345616679269&vmpBin=2#.XX_8bmZ7mMo'
+    
+    # values = scrape_product(url2)
+    
+    # data = format_data_df(values)
+
+    # rw = pd.concat([rw, pd.DataFrame(data)])
     
     
-    # data = format_data_df((LCBO_id2, price2, name2, description2, size2, alcohol2, madein_city2, madein_country2, brand2, sugar2, sweetness2, style1_2, style2_2, variety2, featured_LCBO_id2, recomm_foods2))
-    # rw = rw.append(data, ignore_index=True)
-    
-    # Product 3
     # url3 = 'https://www.lcbo.com/webapp/wcs/stores/servlet/en/lcbo/red-wine-14001/domaine-breton-clos-s%C3%A9n%C3%A9chal-2015-780809#.XYJB0WZ7mMo'
-    # soup3 = scrape_page_raw(url3)
+    
+    # values = scrape_product(url3)
+    
+    # data = format_data_df(values)
+
+    # rw = pd.concat([rw, pd.DataFrame(data)])
 
     
-    # LCBO_html3, price_html3, name_html3, description_html3, product_img_html3, product_details_html3, featured_wines_html3, food_recomms_html3 = \
-    #     find_html_sections(soup3)    
-        
-        
-    # LCBO_id3 = get_info(LCBO_html3, 'id')
-    # price3 = get_info(price_html3, 'price')
-    # name3 = get_info(name_html3, 'name')
-    # description3 = get_info(description_html3, 'description')
-    
-    # size3, alcohol3, madein_city3, madein_country3, brand3, sugar3, sweetness3, style1_3, style2_3, variety3 = \
-    #     get_details(product_details_html3)
-    # featured_LCBO_id3 = get_featured_wines(featured_wines_html3)
-    # recomm_foods3 = get_recomm_foods(food_recomms_html3)
-    
-    # data = format_data_df((LCBO_id3, price3, name3, description3, size3, alcohol3, madein_city3, madein_country3, brand3, sugar3, sweetness3, style1_3, style2_3, variety3, featured_LCBO_id3, recomm_foods3))
-    # rw = rw.append(data, ignore_index=True)
-
-    
-    
+    # rw.to_csv('rw.csv', index=False)
     
