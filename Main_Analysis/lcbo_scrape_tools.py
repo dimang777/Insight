@@ -8,6 +8,10 @@ import io
 import time
 
 def find_class(soup, class_name):
+    # Finds and returns the desired class within html
+    # Input: Beautifulsoup object and the name of the class to find
+    # Output: cropped html content
+
     content = soup.find(class_ = class_name)
     # print(content)
     return content  
@@ -193,20 +197,6 @@ def get_keyword_idx(text, keyword):
     idx = len(text) - len(text.lstrip()) + len(keyword) # Start index of whitespace after the keyword
     return idx
 
-
-# Change it later to text instead of prettify
-def print_list_web(for_var):
-    # Utility - display the lines and their index
-    for i in range(0,len(for_var)):
-        print(i)
-        print(for_var[i].prettify())
-
-def print_list_str(for_var):
-    # Utility - display the html lines and their index
-    for i in range(0,len(for_var)):
-        print(i)
-        print(for_var[i])
-
 def find_html_sections(soup):
     # Find relevant sections for each feature extraction from the webpage html script
     # soup is mutable - i.e., passed by reference
@@ -265,6 +255,10 @@ def scrape_page_raw(url):
     return page.text, BS(page.text, 'html.parser')
 
 def get_random_ua():
+    # Get a random user agent
+    # Input:
+    # Output: random user agent str
+
     random_ua = ''
     ua_file = 'ua_file.txt'
     try:
@@ -348,6 +342,9 @@ def scrape_product(url, index = -1):
 
 
 def parse_info(soup, url):
+    # Given the Beautifulsoup object, get values for the df element
+    # Input: Beautifulsoup object to scrape, url to save into the df
+    # Output: a tuple of scraped information
 
     # Get relevant sections
     LCBO_html, price_html, name_html, description_html, product_img_html, product_details_html, featured_wines_html, food_recomms_html = \
@@ -367,49 +364,38 @@ def parse_info(soup, url):
     return (LCBO_id, price, name, description, size, alcohol, madein_city, madein_country, brand, sugar, sweetness, style1, style2, variety, featured_LCBO_id, recomm_foods, url, pic_src)
 
 def read_saved_soup(file_name):
+    # Read the saved Breautifulsoup object
+    # Input: Beautifulsoup object to scrape, url to save into the df
+    # Output: a tuple of scraped information
+
     f = io.open(file_name, mode="r", encoding="utf-8")
     return BS(f.read())
 
 def get_pic_src(soup):
     # Get the web source of the picture of the wine product
+    # Input: Beautifulsoup object to scrape
+    # Output: URL of the picture in str
+
     images = soup.findAll('img')
     return 'https://www.lcbo.com' + images[3]['src']
 
 if __name__ == '__main__':
+    None
     # url1 = 'https://www.lcbo.com/webapp/wcs/stores/servlet/en/lcbo/red-wine-14001/folonari-valpolicella-classico-doc-828'
     # soup = scrape_page_raw(url1)
-    soup = read_saved_soup('html_source/0.html')
+    # soup = read_saved_soup('html_source/0.html')
 
-    LCBO_html, price_html, name_html, description_html, product_img_html, product_details_html, featured_wines_html, food_recomms_html = \
-    find_html_sections(soup)
-
-    values = parse_info(soup)
-
-    # values = scrape_product(url1)
-    
-    data = format_data_df_v2(values)
-
-    rw = pd.DataFrame(data)
-
-
+    # values = parse_info(soup)
 
     # url2 = 'https://www.lcbo.com/webapp/wcs/stores/servlet/en/lcbo/yalumba-coonawarra-cabernet-sauvignon-460667?vmpContextPage=category&vmpContextItem=3074457345616679269&vmpBin=2#.XX_8bmZ7mMo'
-    
     # values = scrape_product(url2)
-    
     # data = format_data_df(values)
-
     # rw = pd.concat([rw, pd.DataFrame(data)])
     
     
     # url3 = 'https://www.lcbo.com/webapp/wcs/stores/servlet/en/lcbo/red-wine-14001/domaine-breton-clos-s%C3%A9n%C3%A9chal-2015-780809#.XYJB0WZ7mMo'
-    
     # values = scrape_product(url3)
-    
     # data = format_data_df(values)
-
     # rw = pd.concat([rw, pd.DataFrame(data)])
-
-    
     # rw.to_csv('rw.csv', index=False)
     
