@@ -98,11 +98,17 @@ def add_url_to_df():
     rw_v3_pic_and_url['Pic_src'] = pic_url['Pic_src']
     rw_v3_pic_and_url.to_excel('rw_v3_pic_and_url.xlsx', index=False)
 
+def save_to_pickle():
+    rw_df_mvp_v2 = pd.read_excel('rw_df_mvp_v2.xlsx')
+    rw_df_mvp_v2.to_pickle("rw_df_mvp_v2.pkl")
+
 
 if __name__ == '__main__':
     max_items = 5520 # should be in multiples of 12 - max is 5520 - used to nativate pages
     max_products = 5526 # number of red wine products
 
+
+    save_to_pickle()
     # use_saved_soups_toscrape(max_products)
 
     # use_web_toscrape(24)

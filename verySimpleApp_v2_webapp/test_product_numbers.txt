@@ -1,0 +1,20 @@
+V723478
+L419945
+
+
+
+{'LCBO_id': 'L419945',
+ 'Price': 14.95,
+ 'Name': '13th Street Burger Blend Gamay Pinot Noir VQA',
+ 'Size': 750,
+ 'Alcohol': 13.5,
+ 'Madein_city': 'Ontario',
+ 'Madein_country': 'Canada',
+ 'Brand': 'Thirteenth Street Wine Corp.',
+ 'Sugar': 8,
+ 'Sweetness': 'D - Dry',
+ 'Style1': 'Fruity',
+ 'Style2': 'Medium-bodied',
+ 'Variety': 'Pinot Noir Blend',
+ 'URL': 'https://www.lcbo.com/webapp/wcs/stores/servlet/en/lcbo/red-wine-14001/13th-street-burger-blend-gamay-pinot-noir-vqa-419945',
+ 'Pic_src': 'https://www.lcbo.com/content/dam/lcbo/products/419945.jpg/jcr:content/renditions/cq5dam.web.1280.1280.jpeg'}

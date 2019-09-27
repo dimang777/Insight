@@ -26,7 +26,7 @@ rw_desc_df_raw_v1.columns
 
 rw_desc_df_raw_v1['Description'][0]
 
-rw_desc_df_raw_v1['Desc_nopunct'][0]
+rw_desc_df_raw_v1['Desc_nopunct'][0][0]
 
 
 
@@ -40,7 +40,7 @@ def tokenize(text):
 
 rw_desc_df_raw_v1['Desc_tokenized'] = rw_desc_df_raw_v1['Desc_nopunct'].apply(lambda x: tokenize(x.lower())) #We convert to lower as Python is case-sensitive.
 
-rw_desc_df_raw_v1['Desc_tokenized'][0]
+rw_desc_df_raw_v1['Desc_tokenized'][0][1]
 
 rw_desc_df_raw_v1.columns
 
@@ -55,7 +55,7 @@ def remove_stopwords(tokenized_list):
 
 rw_desc_df_raw_v1['Desc_nostop'] = rw_desc_df_raw_v1['Desc_tokenized'].apply(lambda x: remove_stopwords(x))
 
-rw_desc_df_raw_v1['Desc_nostop'][0]
+rw_desc_df_raw_v1['Desc_nostop'][0][1]
 
 
 
@@ -68,6 +68,9 @@ def stemming(tokenized_text):
 
 rw_desc_df_raw_v1['Desc_stemmed'] = rw_desc_df_raw_v1['Desc_nostop'].apply(lambda x: stemming(x))
 
+
+rw_desc_df_raw_v1['Desc_stemmed'][0][3]
+
 rw_desc_df_raw_v1.columns
 
 
@@ -79,14 +82,17 @@ def lemmatizing(tokenized_text):
     text = [wn.lemmatize(word) for word in tokenized_text]
     return text
 
-rw_desc_df_raw_v1['Desc_lemmatized'] = rw_desc_df_raw_v1['Desc_nostop'].apply(lambda x: lemmatizing(x))
+rw_desc_df_raw_v1['Desc_lemmatized'] = rw_desc_df_raw_v1['Desc_stemmed'].apply(lambda x: lemmatizing(x))
 
 rw_desc_df_raw_v1['Desc_nostop'][100]
 rw_desc_df_raw_v1['Desc_lemmatized'][100]
 rw_desc_df_raw_v1.columns
 
+rw_desc_df_raw_v1['Desc_lemmatized'][1000][3]
 
-rw_desc_df_raw_v1.to_excel("rw_desc_df_preprocessed_v1.xlsx")
+
+rw_desc_df_raw_v1.to_pickle('rw_desc_df_raw_v1.pkl')
+# rw_desc_df_raw_v1.to_excel("rw_desc_df_preprocessed_v1.xlsx") # This completely ruins the dataframe and list of strs
 
 
 

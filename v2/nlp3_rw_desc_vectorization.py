@@ -5,12 +5,15 @@ stoplist = set(stopwords.words('english'))
 import re
 import string
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 # Source: https://github.com/BadreeshShetty/Natural-Language-Processing-NLP-for-Machine-Learning/blob/master/NLP.ipynb
 
 # Vectorization
 
 
 rw_desc_df_preprocessed_v1 = pd.read_excel('rw_desc_df_preprocessed_v1.xlsx')
+rw_desc_df_preprocessed_v1.shape
+rw_desc_df_preprocessed_v1.columns
 data_count = rw_desc_df_preprocessed_v1.count(axis = 0)
 rw_desc_df_preprocessed_v1.count(axis = 0)
 
@@ -47,6 +50,13 @@ X_counts_df2.columns
 X_counts_df2.head(10)
 
 # TF-IDF
+
+tfidf_vect = TfidfVectorizer(analyzer=clean_text)
+X_tfidf = tfidf_vect.fit_transform(rw_desc_df_preprocessed_v1['Description'])
+print(X_tfidf.shape)
+print(tfidf_vect.get_feature_names())
+
+
 
 
 
