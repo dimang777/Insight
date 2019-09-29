@@ -3,22 +3,23 @@ from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 import numpy as np
 from timeit import default_timer as timer
 
-# Training doc2vec model iteration 2
+# Training doc2vec model iteration 3
+# Changed strategy to work with smaller data set (i.e., LCBO df)
+# Larger dataset is hard to iterate and visualize using t-sne (takes long time)
+# Observations so far
+# tags not very useful especially there is no clear label
+# window size of 5 seems to capture the doc structure more than key words
+# Need to focus on keywords so reduce the window size. Trying 2.
+# Because of the smaller data set, reduce the vector size to 25
+# Use lemmatization to make the distribution denser.
+# Previous model had overall lower similarity score (0.534)
 
-kag_folder = 'C:/Users/diman/OneDrive/Work_temp/Insight/LargeData/'
-
-
-kag_df_essential = pd.read_excel(kag_folder + 'kag_df_essential.xlsx')
-kag_desc_prepro = pd.read_pickle(kag_folder + 'kag_desc_prepro.pkl')
-desc_token_kag = list(kag_desc_prepro['Desc_nostop'])
-desc_token = list(kag_desc_prepro['Desc_nostop']) # Later combined with LCBO df
-kag_len = len(desc_token_kag)
 
 
 rw_desc_prepro = pd.read_pickle('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/cleaned/rw_desc_df_prepro.pkl')
 rw_df = pd.read_excel('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/for_models/rw_df_mvp_v2.xlsx')
 LCBO_id = rw_df['LCBO_id']
-desc_token_LCBO = list(rw_desc_prepro['Desc_nostop'])
+desc_token = list(rw_desc_prepro['Desc_nostop'])
 LCBO_len = len(desc_token_LCBO)
 
 print(kag_len)
