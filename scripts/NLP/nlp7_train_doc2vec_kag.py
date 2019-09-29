@@ -2,11 +2,11 @@ import pandas as pd
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 import numpy as np
 
-# This particular model has been deleted.
-# It didn't really work.
+# This particular model has been deleted accidentally.
+# It didn't work.
+
 
 # =============================================================================
-# 
 # kag_desc_prepro = pd.read_pickle('../data/cleaned/kag_desc_prepro.pkl')
 # desc_token_kag = list(kag_desc_prepro['Desc_lemmatized'])
 # desc_token = list(kag_desc_prepro['Desc_lemmatized'])
@@ -71,6 +71,8 @@ import numpy as np
 # print('Model Saved')
 # 
 # 
+# model= Doc2Vec.load('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/models/kag_d2v_25vec_lem.model')
+# 
 # 
 # # Test 1
 # 
@@ -127,9 +129,9 @@ import numpy as np
 # # to find vector of doc in training data using tags or in other words, printing the vector of document at index 1 in training data
 # print(model.docvecs['1'])
 # 
+# 
+# 
+#
+# 
 # =============================================================================
-
-
-
-
 

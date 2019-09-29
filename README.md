@@ -12,8 +12,8 @@ Some of the data that are too large were excluded. Namely, wine data available i
 
 /script
 Script contains Python files that were used to create the web scraping tools and recommendation engine of the system. There are three subdirectories for each component of the system. 
-Scrape folder contains LCBO_scrape_tools.py and lcbo_navigate_main.py. The first file contains functions based on Beautifulsoup that extracts information from a LCBO wine product webpage. The second file helps to navigate the website and contains functions that exports the scraped data to CSV files. 
-Rw_process folder contains Python files that were used to process the raw data that was scraped.
+scrape folder contains LCBO_scrape_tools.py and lcbo_navigate_scrape_main.py. The first file contains functions based on Beautifulsoup that extracts information from a LCBO wine product webpage. The second file helps to navigate the website and contains functions that exports the scraped data to CSV files. 
+rw_process folder contains Python files that were used to process the raw data that was scraped.
 
 NLP folder contains Python scripts that processed the Kaggle wine and LCBO wine data to train a doc2vec model.
 

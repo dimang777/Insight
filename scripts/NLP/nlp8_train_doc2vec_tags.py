@@ -1,6 +1,7 @@
 import pandas as pd
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 import numpy as np
+from timeit import default_timer as timer
 
 # Training doc2vec model iteration 2
 
@@ -37,7 +38,7 @@ for idx, entry in enumerate(desc_token):
     if idx < kag_len:
         tagged_data.append(TaggedDocument(entry, tags=[kag_df_essential['province'][idx], kag_df_essential['variety'][idx], str(idx)]))
     else:
-        tagged_data.append(TaggedDocument(entry, tags=[rw_df['Madein_city'][idx], rw_df['Variety'][idx], str(idx)]))
+        tagged_data.append(TaggedDocument(entry, tags=[rw_df['Madein_city'][idx-kag_len], rw_df['Variety'][idx-kag_len], str(idx)]))
 
 
 
@@ -61,6 +62,7 @@ model = Doc2Vec(vector_size = vec_size,
 model.build_vocab(tagged_data)
 
 for epoch in range(max_epochs):
+    start = timer()
     print('iteration {0}'.format(epoch))
     model.train(tagged_data,
                 total_examples = model.corpus_count,
@@ -69,70 +71,106 @@ for epoch in range(max_epochs):
     model.alpha -= 0.0002
     # fix the learning rate, no decay
     # model.min_alpha = model.alpha
+    duration = timer() - start
+    print(duration)
 
-model.save('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/models/kag_d2v.model')
+model.save('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/models/kag_d2v_v1_100vec_5win_stopword.model')
+model.save('C:/Users/diman/OneDrive/Work_temp/Insight/LargeModels/kag_d2v_v1_100vec_5win_stopword.model')
 print('Model Saved')
 
+model= Doc2Vec.load('C:/Users/diman/OneDrive/Work_temp/Insight/LargeModels/kag_d2v_v1_100vec_5win_stopword.model')
 
-# =============================================================================
-# 
-# # Test 1
-# 
-# similar_doc = model.docvecs.most_similar('129975')
-# print(similar_doc)
-# 
-# rw_df[['Name', 'Madein_country', 'Madein_city', 'Variety']][rw_df['LCBO_id']=='V155713'].index
-# 
-# rw_df['Description'][0]
-# rw_df['Description'][704]
-# 
-# rw_df.loc[0, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
-# rw_df.loc[704, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
-# # Maybe little
-# 
-# 
-# # Test 2
-# similar_doc = model.docvecs.most_similar('129976')
-# print(similar_doc)
-# 
-# rw_df[rw_df['LCBO_id']=='L524520'].index
-# 
-# rw_df['Description'][1]
-# rw_df['Description'][1013]
-# 
-# rw_df.loc[1, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
-# rw_df.loc[1013, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
-# # Not really
-# 
-# 
-# # Test 3
-# similar_doc = model.docvecs.most_similar('129977')
-# print(similar_doc)
-# 
-# rw_df[rw_df['LCBO_id']=='V473116'].index
-# 
-# rw_df['Description'][2]
-# rw_df['Description'][2097]
-# 
-# rw_df.loc[2, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
-# rw_df.loc[2097, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
-# # Not really
-# 
-# 
-# test_data = desc_token_LCBO[0]
-# v1 = model.infer_vector(test_data)
-# print("V1_infer", v1)
-# 
-# # to find most similar doc using tags
-# similar_doc = model.docvecs.most_similar('129976')
-# print(similar_doc)
-# 
-# 
-# # to find vector of doc in training data using tags or in other words, printing the vector of document at index 1 in training data
-# print(model.docvecs['1'])
-#
-# 
-# =============================================================================
+
+
+# Test 1
+
+similar_doc = model.docvecs.most_similar('129976')
+print(similar_doc)
+
+rw_df['Description'][1]
+rw_df['Description'][132751-kag_len]
+
+rw_df.loc[1, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
+rw_df.loc[132751-kag_len, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
+# not really
+
+
+# Test 2
+similar_doc = model.docvecs.most_similar('129977')
+print(similar_doc)
+
+rw_df['Description'][129977-kag_len]
+rw_df['Description'][130693-kag_len]
+
+rw_df.loc[129977-kag_len, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
+rw_df.loc[130693-kag_len, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
+# different
+
+
+# Test 3
+similar_doc = model.docvecs.most_similar('129978')
+print(similar_doc)
+
+rw_df['Description'][129978-kag_len]
+rw_df['Description'][130693-kag_len]
+
+rw_df.loc[129977-kag_len, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
+rw_df.loc[130693-kag_len, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
+# Not really
+
+
+# Test 4
+rw_df_num = 4
+total_num = kag_len + rw_df_num
+display_num = 100
+similar_doc = model.docvecs.most_similar(str(total_num), topn=display_num)
+print(similar_doc)
+sim_found_num = 130994
+
+print(rw_df['Description'][rw_df_num])
+print('\n')
+print(rw_df['Description'][sim_found_num-kag_len])
+
+print(rw_df.loc[rw_df_num, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
+print('\n')
+print(rw_df.loc[sim_found_num-kag_len, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
+# different
+
+
+# Test 5
+rw_df_num = 5
+total_num = kag_len + rw_df_num
+display_num = 100
+similar_doc = model.docvecs.most_similar(str(total_num), topn=display_num)
+print(similar_doc)
+sim_found_num = 132370
+
+print(rw_df['Description'][rw_df_num])
+print('\n')
+print(rw_df['Description'][sim_found_num-kag_len])
+
+print(rw_df.loc[rw_df_num, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
+print('\n')
+print(rw_df.loc[sim_found_num-kag_len, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
+# different
+
+
+
+model.docvecs.similarity('Ontario', '129978')
+
+test_data = desc_token_LCBO[0]
+v1 = model.infer_vector(test_data)
+print("V1_infer", v1)
+
+# to find most similar doc using tags
+similar_doc = model.docvecs.most_similar('129976')
+print(similar_doc)
+
+
+# to find vector of doc in training data using tags or in other words, printing the vector of document at index 1 in training data
+print(model.docvecs['1'])
+
+
 
 
 
