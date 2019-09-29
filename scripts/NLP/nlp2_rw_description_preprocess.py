@@ -21,7 +21,7 @@ def tokenize(text):
 
 # Function to remove Stopwords
 def remove_stopwords(tokenized_list):
-    text = [word for word in tokenized_list if word not in stoplist]# To remove all stopwords
+    text = [word for word in tokenized_list if word not in stoplist] # To remove all stopwords
     return text
 
 def stemming(tokenized_text):
@@ -38,30 +38,30 @@ def lemmatizing(tokenized_text):
 if __name__ == '__main__':
     
     # string.punctuation
-    rw_desc_df_raw_v1 = pd.read_excel('rw_desc_df_raw_v1.xlsx')
-    rw_desc_df_raw_v1['Desc_nopunct'] = rw_desc_df_raw_v1['Description'].\
+    rw_mod_desc = pd.read_excel('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/cleaned/rw_mod_desc.xlsx')
+    rw_mod_desc['Desc_nopunct'] = rw_mod_desc['Description'].\
         apply(lambda x: remove_punct(x))
 
     # Tokenize
     #We convert to lower as Python is case-sensitive.
-    rw_desc_df_raw_v1['Desc_tokenized'] = rw_desc_df_raw_v1['Desc_nopunct'].\
+    rw_mod_desc['Desc_tokenized'] = rw_mod_desc['Desc_nopunct'].\
         apply(lambda x: tokenize(x.lower()))
 
    # Remove stop words
-    rw_desc_df_raw_v1['Desc_nostop'] = rw_desc_df_raw_v1['Desc_tokenized'].\
+    rw_mod_desc['Desc_nostop'] = rw_mod_desc['Desc_tokenized'].\
         apply(lambda x: remove_stopwords(x))
 
     # Stemmer
-    rw_desc_df_raw_v1['Desc_stemmed'] = rw_desc_df_raw_v1['Desc_nostop'].\
+    rw_mod_desc['Desc_stemmed'] = rw_mod_desc['Desc_nostop'].\
         apply(lambda x: stemming(x))
 
     # Lemmatizing
-    rw_desc_df_raw_v1['Desc_lemmatized'] = rw_desc_df_raw_v1['Desc_stemmed'].\
+    rw_mod_desc['Desc_lemmatized'] = rw_mod_desc['Desc_stemmed'].\
         apply(lambda x: lemmatizing(x))
 
-    rw_desc_df_raw_v1.to_pickle('rw_desc_df_prepro.pkl')
+    rw_mod_desc.to_pickle('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/cleaned/rw_desc_df_prepro.pkl')
     # Saving to excel completely ruins the dataframe and list of strs
-    
+
 
 
 
