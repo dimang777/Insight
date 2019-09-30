@@ -5,14 +5,19 @@ from lcbo_scrape_tools import scrape_page_raw, scrape_product, format_data_df_v2
 
 
 def get_product_listing_html(url_page):
+    """ Retrieves product listing"""
     _, html_page = scrape_page_raw(url_page)
-    product_listing_container_html = html_page.find(class_ = 'product_listing_container') # Isolate section that contains a list of products
-    product_listing_html = product_listing_container_html.findAll(class_ = 'product_name') # Isolate each product information
+    # Isolate section that contains a list of products
+    product_listing_container_html = html_page\
+        .find(class_ = 'product_listing_container')
+    product_listing_html = product_listing_container_html\
+        .findAll(class_ = 'product_name') # Isolate each product information
 
     return product_listing_html
 
 
 def use_web_toscrape(max_items):
+    """ Access the website to scrape data"""
     page_idx = 0
     while page_idx <= max_items:
         print(page_idx)
@@ -48,23 +53,28 @@ def scrape_url(max_items):
         product_listing_html = get_product_listing_html(url_page)
         
         for product_idx in range(len(product_listing_html)):
-            product_page_link = product_listing_html[product_idx].find('a', href=True)['href']
+            product_page_link = product_listing_html[product_idx]\
+                .find('a', href=True)['href']
 
             data = {'URL':product_page_link}
 
             if page_idx == 0 and product_idx == 0:
                 url_df = pd.DataFrame(data, index = [page_idx])
             else:
-                url_df = pd.concat([url_df, pd.DataFrame(data, index = [page_idx])])
+                url_df = pd.concat([url_df, \
+                                    pd.DataFrame(data, index = [page_idx])])
             
             page_idx = page_idx + 1
 
     url_df.to_csv('url_df.csv', index=False)
 
 def use_saved_soups_toscrape(max_products):
-    # This method doesn't seem to capture UTF-8 characters (i.e., ones with accents)
-    # So this method can be used to just get the picture sources
-    # divided into two parts to avoid losing data
+    """ This method doesn't seem to capture UTF-8 characters 
+    (i.e., ones with accents). As such, this method can be used to just get 
+    the picture sources.
+    Divided into two parts to avoid losing data
+    """
+
     for product_idx in range(3000):
         print(product_idx)
         soup = read_saved_soup('html_source/' + str(product_idx) + '.html')
@@ -90,7 +100,8 @@ def use_saved_soups_toscrape(max_products):
     rw.to_csv('rw_v2_include_pic_src_3001andon.csv', index=False)
 
 def add_url_to_df():
-    # add picture source and product url to the existing df
+    """ add picture source and product url to the existing df
+    """
     rw_v3_pic_and_url = pd.read_excel('RW_data_wofeaturedwines_UTF-8.xlsx')
     pic_url = pd.read_excel('rw_v2_include_pic_src.xlsx')
     url_df = pd.read_excel('url_df.xlsx')
@@ -104,20 +115,8 @@ def save_to_pickle():
 
 
 if __name__ == '__main__':
-    max_items = 5520 # should be in multiples of 12 - max is 5520 - used to nativate pages
+
+    # should be in multiples of 12 - max is 5520 - used to nativate pages
+    max_items = 5520
     max_products = 5526 # number of red wine products
-
-
-    save_to_pickle()
-    # use_saved_soups_toscrape(max_products)
-
-    # use_web_toscrape(24)
-    # use_web_toscrape() # First version without picture src
-    # use_saved_soups_toscrape(max_products)
-
-    # use_saved_soups_toscrape(max_products)
-
-    # scrape_url(max_items)
-    # add_url_to_df()
-
 

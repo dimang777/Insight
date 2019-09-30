@@ -162,6 +162,7 @@ display_num = 100
 similar_doc = model.docvecs.most_similar(str(total_num), topn=display_num)
 print(similar_doc)
 sim_found_num = int(similar_doc[0][0])
+similar_doc[0][1]
 
 if sim_found_num < kag_len:
 
@@ -183,43 +184,42 @@ else:
 # different
 
 
-model.docvecs.similarity('Ontario', '129978')
+# calculate average similarity score
+similarity_score_list = []
+for idx in range(0, total_len, 100):
+    if np.mod(idx,1000)==0:
+        print(idx)
+    similar_doc = model.docvecs.most_similar(str(idx))
+    similarity_score_list.append(float(similar_doc[0][1]))
 
-test_data = desc_token_LCBO[0]
-v1 = model.infer_vector(test_data)
-print("V1_infer", v1)
+similarity_score_mean = np.mean(similarity_score_list)
+print(similarity_score_mean)
 
-# to find most similar doc using tags
-similar_doc = model.docvecs.most_similar('129976')
-print(similar_doc)
-
-
-# to find vector of doc in training data using tags or in other words, printing the vector of document at index 1 in training data
-print(model.docvecs['1'])
-
-# similarity score are quite low
+# similarity score are quite low - 0.534
 
 
-
-doc_tags = list(model.docvecs.doctags.keys())
-X = model[doc_tags]
-
-tsne = TSNE(n_components=2)
-X_tsne = tsne.fit_transform(X)
-df = pd.DataFrame(X_tsne, index=doc_tags, columns=['x', 'y'])
-
-# Pinot Grigio
-plotScatter(keyword="Pinot Grigio")
-
-
-# another version
-X = model.wv[model.wv.vocab]
-
-tsne = TSNE(n_components=2)
-X_tsne = tsne.fit_transform(X)
-
-plt.scatter(X_tsne[:, 0], X_tsne[:, 1])
-plt.show()
-
+#t-sne
+# =============================================================================
+# doc_tags = list(model.docvecs.doctags.keys())
+# X = model[doc_tags]
+# 
+# tsne = TSNE(n_components=2)
+# X_tsne = tsne.fit_transform(X)
+# df = pd.DataFrame(X_tsne, index=doc_tags, columns=['x', 'y'])
+# 
+# # Pinot Grigio
+# plotScatter(keyword="Pinot Grigio")
+# 
+# 
+# # another version
+# X = model.wv[model.wv.vocab]
+# 
+# tsne = TSNE(n_components=2)
+# X_tsne = tsne.fit_transform(X)
+# 
+# plt.scatter(X_tsne[:, 0], X_tsne[:, 1])
+# plt.show()
+# 
+# =============================================================================
 
 

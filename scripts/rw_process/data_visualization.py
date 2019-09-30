@@ -1,5 +1,5 @@
+""" This code visualizes the initial data scraped"""
 import pandas as pd
-# Stems from S4_cleandataanalysis
 
 # features to use
 # LCBO ID

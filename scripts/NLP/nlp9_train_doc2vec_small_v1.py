@@ -2,6 +2,8 @@ import pandas as pd
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 import numpy as np
 from timeit import default_timer as timer
+from sklearn.model_selection import train_test_split
+
 
 # Training doc2vec model iteration 3
 # Changed strategy to work with smaller data set (i.e., LCBO df)
@@ -13,44 +15,44 @@ from timeit import default_timer as timer
 # Because of the smaller data set, reduce the vector size to 25
 # Use lemmatization to make the distribution denser.
 # Previous model had overall lower similarity score (0.534)
-
-
-
-rw_desc_prepro = pd.read_pickle('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/cleaned/rw_desc_df_prepro.pkl')
+# Set train and test data
+rw_mod_desc = pd.read_pickle('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/cleaned/rw_mod_desc.pkl')
 rw_df = pd.read_excel('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/for_models/rw_df_mvp_v2.xlsx')
 LCBO_id = rw_df['LCBO_id']
-desc_token = list(rw_desc_prepro['Desc_nostop'])
-LCBO_len = len(desc_token_LCBO)
+desc_token = list(rw_mod_desc['Cate_attached'])
+LCBO_len = len(desc_token)
 
-print(kag_len)
 print(LCBO_len)
 print(len(LCBO_id))
 
-desc_token.extend(desc_token_LCBO)
 total_len = len(desc_token)
 
-idx=0
-kag_df_essential.columns
+# Divide into train, validation, and test sets
+desc_train, desc_temp, desc_idx_train, desc_idx_temp = train_test_split(desc_token, range(total_len), test_size=0.20, random_state=0)
+desc_val, desc_test, desc_idx_val, desc_idx_test = train_test_split(desc_temp,desc_idx_temp,test_size = 0.5, random_state=0)
+
+print(len(desc_train))
+print(len(desc_val))
+print(len(desc_test))
+
 
 tagged_data = []
-for idx, entry in enumerate(desc_token):
-    if np.mod(idx,1000)==0:
+for idx, entry in zip(desc_idx_train, desc_train):
+    print(idx)
+    if np.mod(idx,500)==0:
         print(idx)
-    if idx < kag_len:
-        tagged_data.append(TaggedDocument(entry, tags=[kag_df_essential['province'][idx], kag_df_essential['variety'][idx], str(idx)]))
-    else:
-        tagged_data.append(TaggedDocument(entry, tags=[rw_df['Madein_city'][idx-kag_len], rw_df['Variety'][idx-kag_len], str(idx)]))
+    tagged_data.append(TaggedDocument(entry, tags=[str(idx)]))
 
 
-
+desc_train[0]
 
 
 max_epochs = 50
-vec_size = 100 # Previous setup - 25
+vec_size = 50
 alpha = 0.025
-window_size = 5
+window_size = 2
 num_workers = 4
-minimun_count = 1 # Previous setup - 2
+minimun_count = 1
 model = Doc2Vec(vector_size = vec_size,
                 window = window_size,
                 alpha = alpha,
@@ -75,112 +77,105 @@ for epoch in range(max_epochs):
     duration = timer() - start
     print(duration)
 
-model.save('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/models/kag_d2v_v1_100vec_5win_stopword.model')
-model.save('C:/Users/diman/OneDrive/Work_temp/Insight/LargeModels/kag_d2v_v1_100vec_5win_stopword.model')
+model.save('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/models/v2_lcbo_d2v_50vec_2win_lemma.model')
+model.save('C:/Users/diman/OneDrive/Work_temp/Insight/LargeModels/v2_lcbo_d2v_50vec_2win_lemma.model')
 print('Model Saved')
 
-model= Doc2Vec.load('C:/Users/diman/OneDrive/Work_temp/Insight/LargeModels/kag_d2v_v1_100vec_5win_stopword.model')
+model= Doc2Vec.load('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/models/v2_lcbo_d2v_50vec_2win_lemma.model')
 
 
+
+desc_idx_train
 
 # Test 1
-
-similar_doc = model.docvecs.most_similar('129976')
-print(similar_doc)
-
-rw_df['Description'][1]
-rw_df['Description'][132751-kag_len]
-
-rw_df.loc[1, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
-rw_df.loc[132751-kag_len, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
-# not really
-
-
-# Test 2
-similar_doc = model.docvecs.most_similar('129977')
-print(similar_doc)
-
-rw_df['Description'][129977-kag_len]
-rw_df['Description'][130693-kag_len]
-
-rw_df.loc[129977-kag_len, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
-rw_df.loc[130693-kag_len, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
-# different
-
-
-# Test 3
-similar_doc = model.docvecs.most_similar('129978')
-print(similar_doc)
-
-rw_df['Description'][129978-kag_len]
-rw_df['Description'][130693-kag_len]
-
-rw_df.loc[129977-kag_len, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
-rw_df.loc[130693-kag_len, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']]
-# Not really
-
-
-# Test 4
-rw_df_num = 4
-total_num = kag_len + rw_df_num
-display_num = 100
-similar_doc = model.docvecs.most_similar(str(total_num), topn=display_num)
-print(similar_doc)
-sim_found_num = 130994
-
-print(rw_df['Description'][rw_df_num])
-print('\n')
-print(rw_df['Description'][sim_found_num-kag_len])
-
-print(rw_df.loc[rw_df_num, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
-print('\n')
-print(rw_df.loc[sim_found_num-kag_len, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
-# different
-
-
-# Test 5
-rw_df_num = 5
-total_num = kag_len + rw_df_num
-display_num = 100
-similar_doc = model.docvecs.most_similar(str(total_num), topn=display_num)
-print(similar_doc)
-sim_found_num = 132370
-
-print(rw_df['Description'][rw_df_num])
-print('\n')
-print(rw_df['Description'][sim_found_num-kag_len])
-
-print(rw_df.loc[rw_df_num, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
-print('\n')
-print(rw_df.loc[sim_found_num-kag_len, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
-# different
-
-
-# Test 6
-rw_df_num = 6
-total_num = kag_len + rw_df_num
-display_num = 100
+rw_df_num = desc_idx_train[0]
+total_num = rw_df_num
+display_num = 10
 similar_doc = model.docvecs.most_similar(str(total_num), topn=display_num)
 print(similar_doc)
 sim_found_num = int(similar_doc[0][0])
 
-if sim_found_num < kag_len:
+print(rw_df['Description'][rw_df_num])
+print('\n')
+print(rw_df['Description'][sim_found_num])
 
-    print(rw_df['Description'][rw_df_num])
-    print('\n')
-    print(kag_df_essential['description'][sim_found_num])
-    
-    print(rw_df.loc[rw_df_num, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
-    print('\n')
-    print(kag_df_essential.loc[sim_found_num, ['region_1', 'province', 'country', 'variety', 'winery']])
+print(rw_df.loc[rw_df_num, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
+print('\n')
+print(rw_df.loc[sim_found_num, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
+
+
+
+# Test 2
+rw_df_num = desc_idx_train[1]
+total_num = rw_df_num
+display_num = 10
+similar_doc = model.docvecs.most_similar(str(total_num), topn=display_num)
+print(similar_doc)
+sim_found_num = int(similar_doc[0][0])
+
+print(rw_df['Description'][rw_df_num])
+print('\n')
+print(rw_df['Description'][sim_found_num])
+
+print(rw_df.loc[rw_df_num, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
+print('\n')
+print(rw_df.loc[sim_found_num, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
+
+
+# Test 3
+rw_df_num = desc_idx_train[2]
+total_num = rw_df_num
+display_num = 10
+similar_doc = model.docvecs.most_similar(str(total_num), topn=display_num)
+print(similar_doc)
+sim_found_num = int(similar_doc[0][0])
+
+print(rw_df['Description'][rw_df_num])
+print('\n')
+print(rw_df['Description'][sim_found_num])
+
+print(rw_df.loc[rw_df_num, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
+print('\n')
+print(rw_df.loc[sim_found_num, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
+
+
+# Test 4
+indices_w_high_score = []
+for count, idx in enumerate(desc_idx_train):
+    if idx != 1859 and idx != 2696:
+        rw_df_num = idx
+        total_num = rw_df_num
+        display_num = 2
+        similar_doc = model.docvecs.most_similar(str(total_num), topn=display_num)
+        # print(similar_doc)
+        if similar_doc[0][1] > 0.75:
+            sim_found_num = int(similar_doc[0][0])
+            print(similar_doc[0])
+            indices_w_high_score.append([count, idx, similar_doc[0]])
+
+same_product = []
+
+item_num = 4
+if rw_df['Name'][indices_w_high_score[item_num][1]] != \
+    rw_df['Name'][int(indices_w_high_score[item_num][2][0])]:
+        rw_df_num = indices_w_high_score[item_num][1]
+        sim_found_num = int(indices_w_high_score[item_num][2][0])
 else:
-    print(rw_df['Description'][rw_df_num])
-    print('\n')
-    print(rw_df['Description'][sim_found_num-kag_len])
-    
-    print(rw_df.loc[rw_df_num, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
-    print('\n')
-    print(rw_df.loc[sim_found_num-kag_len, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
+    print('same product')
+    print(indices_w_high_score[item_num][2][1])
+    print(rw_df['Name'][indices_w_high_score[item_num][1]])
+    print(rw_df['Name'][int(indices_w_high_score[item_num][2][0])])
+    same_product.append([indices_w_high_score[item_num][1], int(indices_w_high_score[item_num][2][0])])
+    rw_df_num = indices_w_high_score[item_num][1]
+    sim_found_num = int(indices_w_high_score[item_num][2][0])
+
+print(rw_df['Description'][rw_df_num])
+print('\n')
+print(rw_df['Description'][sim_found_num])
+
+print(rw_df.loc[rw_df_num, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
+print('\n')
+print(rw_df.loc[sim_found_num, ['Name', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2', 'Price']])
 # different
 
 
