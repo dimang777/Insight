@@ -110,8 +110,8 @@ def add_url_to_df():
     rw_v3_pic_and_url.to_excel('rw_v3_pic_and_url.xlsx', index=False)
 
 def save_to_pickle():
-    rw_df_mvp_v2 = pd.read_excel('rw_df_mvp_v2.xlsx')
-    rw_df_mvp_v2.to_pickle("rw_df_mvp_v2.pkl")
+    rw_df_mvp_v3 = pd.read_excel('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/for_models/rw_df_mvp_v3.xlsx')
+    rw_df_mvp_v3.to_pickle('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/for_models/rw_df_mvp_v3.pkl')
 
 
 if __name__ == '__main__':
@@ -119,4 +119,3 @@ if __name__ == '__main__':
     # should be in multiples of 12 - max is 5520 - used to nativate pages
     max_items = 5520
     max_products = 5526 # number of red wine products
-

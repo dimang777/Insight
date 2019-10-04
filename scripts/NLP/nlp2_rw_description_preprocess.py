@@ -72,16 +72,19 @@ if __name__ == '__main__':
                   'Sugar', 'Sweetness']
 
     rw_mod_desc['Cate_attached'] = ''
-
+    rw_mod_desc['Cate_only_nodesc'] = ''
     for idx in range(rw_prepro_bfr_desc.shape[0]):
         if np.mod(idx, 1000) == 0:
             print(idx)
         str_desc_lem = rw_mod_desc['Desc_lemmatized'].loc[idx]
+        no_desc = []
         for category in cate_order:
             str_desc_lem.append(rw_prepro_bfr_desc.loc[idx, category])
+            no_desc.append(rw_prepro_bfr_desc.loc[idx, category])
 
         rw_mod_desc['Cate_attached'][idx] = str_desc_lem
-        print(rw_mod_desc.loc[idx, 'Cate_attached'])
+        rw_mod_desc['Cate_only_nodesc'][idx] = no_desc
+        print(rw_mod_desc.loc[idx, 'Cate_only_nodesc'])
 
     rw_mod_desc.to_pickle('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/cleaned/rw_mod_desc.pkl')
     # Saving to excel completely ruins the dataframe and list of strs

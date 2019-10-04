@@ -24,7 +24,7 @@ import pandas as pd
 # Featured_wines
 # Recomm_foods
 
-rw_df = pd.read_excel('rw_v3_pic_and_url.xlsx')
+rw_df = pd.read_excel('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/cleaned/rw_v3_pic_and_url.xlsx')
 rw_df.columns
 # Remove rows with missing values
 Vars_to_keep = ['LCBO_id',

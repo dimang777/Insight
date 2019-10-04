@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 from nlp2_rw_description_preprocess import remove_punct
 
-rw_df = pd.read_excel('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/for_models/rw_df_mvp_v2.xlsx')
-rw_prepro_bfr_desc = pd.read_excel('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/for_models/rw_df_mvp_v2.xlsx')
+rw_df = pd.read_excel('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/for_models/rw_df_mvp_v3.xlsx')
+rw_prepro_bfr_desc = pd.read_excel('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/for_models/rw_df_mvp_v3.xlsx')
 
 rw_desc_df_raw = rw_df['Description']
 
@@ -16,11 +16,6 @@ rw_desc_df_raw = rw_df['Description']
 # Style2 - remove - and sapce
 # Sweetness
 # price, alcohol, sugar - changed to categorical data - refer to each function
-
-# rw_prepro_bfr_desc = \
-#     pd.DataFrame(columns=['Madein_city', 'Madein_country', 'Variety', \
-#                           'Brand', 'Style2', 'Sweetness', 'Price', 'Alcohol', \
-#                           'Sugar'])
 
 for idx in range(rw_df.shape[0]):
     if len(str(rw_df.loc[idx, 'Madein_city']).split()) > 1:

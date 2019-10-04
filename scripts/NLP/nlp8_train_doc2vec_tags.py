@@ -15,8 +15,8 @@ desc_token = list(kag_desc_prepro['Desc_nostop']) # Later combined with LCBO df
 kag_len = len(desc_token_kag)
 
 
-rw_desc_prepro = pd.read_pickle('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/cleaned/rw_desc_df_prepro.pkl')
-rw_df = pd.read_excel('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/for_models/rw_df_mvp_v2.xlsx')
+rw_desc_prepro = pd.read_pickle('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/cleaned/rw_desc_df_prepro.pkl') # mvp_v3 compliant
+rw_df = pd.read_excel('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/for_models/rw_df_mvp_v3.xlsx')
 LCBO_id = rw_df['LCBO_id']
 desc_token_LCBO = list(rw_desc_prepro['Desc_nostop'])
 LCBO_len = len(desc_token_LCBO)
