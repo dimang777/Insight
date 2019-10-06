@@ -9,11 +9,11 @@ import sys
 # Local
 sys.path.insert(0, './data')
 
-import redwine_v2
+import redwine_v3
 
 # Create the application object
 app = Flask(__name__)
-rw = redwine_v2.RedWine('./data/rw_df_mvp_v2.pkl')
+rw = redwine_v3.RedWine('./data/rw_df_mvp_v3.pkl', './data/winetales_cos_dist_df_v2.pkl')
 
 @app.route('/',methods=["GET","POST"])
 def home_page():
@@ -25,7 +25,7 @@ def tag_output():
     # Pull input
     id_num =request.args.get('user_input')
     id_cate =int(request.args.get('user_input2'))
-    
+    id_price =int(request.args.get('user_input3'))
 
     # Case if empty
     if id_num == '':

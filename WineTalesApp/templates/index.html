@@ -72,13 +72,14 @@
 
      <!-- Try Section -->
 
+
     <section class="bg-primary mb-0" id="try">
      <!--<div class="loader"></div>-->
       <div class="container">
-        <h2 class="text-center text-white">Please enter the LCBO or Vintages number</h2>
+        <h2 class="text-center text-white">Please enter the LCBO or Vintages number and select the price range</h2>
         <hr class="star-light mb-5">
-
               <div class="col-sm m-3 text-center">
+                <img src = "../static/img/LCBOexampleproduct.png", width = 400>
                     <form action="/output" method="GET" id="user_inputs"> <!-- id="user_input"-->
                     <div class="btn btn-primary" style="width:200px;">
                       <select class="form-control" type="text" id="user_input2" name="user_input2">
@@ -87,13 +88,20 @@
                         <option value="2" type="text">Vintages#</option>
                       </select>
                     </div>
+                    <div class="btn btn-primary" style="width:200px;">
+                      <select class="form-control" type="text" id="user_input3" name="user_input3">
+                        <option value="0" type="text">Select price range:</option>
+                        <option value="1" type="text">&plusmn $5</option>
+                        <option value="2" type="text">&plusmn $10</option>
+                      </select>
+                    </div>
                       <input class="form-control" type="text" id="user_input" name="user_input" placeholder="e.g. LCBO# or Vintages#">
                     </form>
               </div>
        <div class="row justify-content-center twoToneCenter">
              <button type="submit" class="btn btn-secondary btn-lg twoToneCenter" form="user_inputs">Go!</button>
       </div>
-      
+
       {% if my_form_result=='Empty' %}
       <div class="row mt-4 justify-content-center">
             <h4 class="text-danger text-center text-uppercase">You did not type anything!</h4>
