@@ -91,3 +91,13 @@ with open('Validation Questions.txt', 'w', encoding='utf-8') as text_file:
             print(rw_df.loc[validation100_input_idx[idx] , ['Name', 'LCBO_id', 'Madein_country', 'Madein_city', 'Variety', 'Sugar', 'Alcohol', 'Brand', 'Style1', 'Style2']], file=text_file)
 
 
+# Generate a text file of descriptions
+with open('Description pairing.txt', 'w', encoding='utf-8') as text_file:
+    for idx in range(len(validation100_input_idx)):
+        print('\nRecommendation '+str(idx+1)+'\n', file=text_file)
+        for recomm_idx in range(3):
+            print('\nWine ' + str(recomm_idx+1)+'\n', file=text_file)
+            print(rw_df.loc[validation100_recomm_list[idx][recomm_idx] , 'Description'], file=text_file)
+        print('\nInput)'+'\n', file=text_file)
+        print(rw_df.loc[validation100_input_idx[idx] , 'Description'], file=text_file)
+
