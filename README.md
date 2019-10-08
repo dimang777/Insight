@@ -14,7 +14,7 @@ This document consists of seven sections:
 1. [Outline](#outline)
 1. [Getting Started](#getting-started)
 1. [Folder Description](#folder-description)
-1. [WineTales Data Scraping, Cleaning](#winetales-data-scraping,-cleaning)
+1. [WineTales Data Scraping Cleaning](#winetales-data-scraping-cleaning)
 1. [WineTales Model Development](#winetales-model-development)
 1. [WineTales Web App](#winetales-web-app)
 1. [WineTales Validation](#winetales-validation)
@@ -91,7 +91,7 @@ This folder contains the questionnaire and results of the questionnaire for the 
 
 Contains Python script based on Flask as well as HTML, css, js files used to generate the WineTales web app.
 
-## WineTales Data Scraping, Cleaning
+## WineTales Data Scraping Cleaning
 
 WineTales is based on the red wine data scraped from the LCBO website. The scripts used to scrape the data are contained in /script/scrape. Beautifulsoup4 was used to retrieve the HTML file, and further processing was done to extract the relevant information. 
 
