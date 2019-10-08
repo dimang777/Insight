@@ -12,7 +12,7 @@ window_size = 2
 num_workers = 4
 minimun_count = 1
 dm_select = 0 # 1: PV-DM; 0:PV-DBOW
-model_name = 'FM_v1_' + 'e' + str(max_epochs) + '_' + 'v' + str(vec_size) + '_' \
+model_name = 'Desc_encoding_model_' + 'e' + str(max_epochs) + '_' + 'v' + str(vec_size) + '_' \
                 + 'w' + str(window_size) + '_' + 'c' + str(minimun_count) + '_' \
                 + 'd' + str(dm_select)
 model= Doc2Vec.load('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/models/' +model_name +'.model')

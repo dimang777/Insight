@@ -61,7 +61,7 @@ for epoch in range(max_epochs):
 
 
 # Save
-model_name = 'FM_v1_' + 'e' + str(max_epochs) + '_' + 'v' + str(vec_size) + '_' \
+model_name = 'Desc_encoding_model_' + 'e' + str(max_epochs) + '_' + 'v' + str(vec_size) + '_' \
                 + 'w' + str(window_size) + '_' + 'c' + str(minimun_count) + '_' \
                 + 'd' + str(dm_select)
 model.save('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/models/'+model_name+'.model')
