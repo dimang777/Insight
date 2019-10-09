@@ -101,3 +101,6 @@ with open('Description pairing.txt', 'w', encoding='utf-8') as text_file:
         print('\nInput)'+'\n', file=text_file)
         print(rw_df.loc[validation100_input_idx[idx] , 'Description'], file=text_file)
 
+# Save
+with open('C:/Users/diman/OneDrive/Work_temp/Insight/Git_Workspace/data/cleaned/validation100_input_idx.pkl', 'wb') as f:
+    pickle.dump([validation100_input_idx, validation100_recomm_list], f)
