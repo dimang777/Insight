@@ -76,6 +76,8 @@ v = winetales_df.loc[validation100_recomm_list[idx][0], :].to_numpy()
 
 uv = u * v
 
+uv
+
 
 weight_vec
 
@@ -85,9 +87,14 @@ vv = np.average(np.square(v), weights=weight_vec)
 dist = 1.0 - uv / np.sqrt(uu * vv)
 
 
+uv[text_idx]
+uv[alcohol_idx]
+text_idx
+alcohol_idx
+sugar_idx
 
-
-
+madein_city_idx, madein_country_idx, madein_brand_idx, madein_sweetness_idx,
+madein_style1_idx, madein_style2_idx, madein_variety_idx
 
 
 
