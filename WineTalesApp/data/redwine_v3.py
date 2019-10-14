@@ -1,6 +1,4 @@
 import pandas as pd
-import numpy as np
-import pickle
 
 class RedWine:
     def __init__(self, pkltoload, hashtablepkl):
@@ -17,15 +15,15 @@ class RedWine:
         Returns the index of a product with id_to_find
         Input: id_to_find - string - e.g., L806, V100221
         Output: index within the df
-        Example: rw_df_mvp.display_product(rw_df_mvp.get_idx_w_id('L419945'))
+        Example: rw_df_mvp.get_productinfo_in_dict(rw_df_mvp.get_idx_w_id('L419945'))
         """
 
         return int(self.__df[self.__df['LCBO_id']==id_to_find].index[0])
 
     def get_recommendations(self, product_idx_or_id, return_sortedlist = False):
         """
-        Gower distance between for all pairs given a product
-        Input: index or id of the product
+        cosine similarity between for all pairs given a product - access hash table
+        Input: id of the product
         Output: a list of three product indices for recommendation
         Examples
         1. get_recommendations(product_idx)
@@ -45,9 +43,21 @@ class RedWine:
         else:
             return tuple(recommedation_list)
 
+    def check_ifavailable(self, product_idx_or_id):
+        """
+        Check if the input product is in database
+        Input: id of the product
+        Output: boolean on whether the id is found in the database
+        """
+
+        if product_idx_or_id in list(self.__df['LCBO_id']):
+            return True
+        else:
+            return False
+
     def get_product_info(self, idx):
         """
-        Example: rw_df_mvp.display_product(rw_df_mvp.get_idx_w_id('L419945'))
+        Example: rw_df_mvp.get_productinfo_in_dict(rw_df_mvp.get_idx_w_id('L419945'))
         """
         columns_to_show = ['LCBO_id', 'Price', 'Name', 'Size', 'Alcohol',
        'Madein_city', 'Madein_country', 'Brand', 'Sugar', 'Sweetness',
@@ -84,3 +94,8 @@ class RedWine:
 
 if __name__ == '__main__':
     None
+    # Test code
+    rw = RedWine('./rw_df_mvp_v3.pkl', './winetales_cos_dist_df_v2.pkl')
+    rw.get_productinfo_in_dict(rw.get_idx_w_id('L419945'))
+    rw.get_productinfo_in_dict(rw.get_idx_w_id('L68924'))
+    rw.check_ifavailable('L68924')

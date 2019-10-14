@@ -91,7 +91,6 @@
                     <div class="btn btn-primary" style="width:200px;">
                       <select class="form-control" type="text" id="user_input3" name="user_input3">
                         <option value="0" type="text">Select price range:</option>
-                        <option value="1" type="text">&plusmn $5</option>
                         <option value="2" type="text">&plusmn $10</option>
                       </select>
                     </div>
@@ -104,10 +103,12 @@
 
       {% if my_form_result=='Empty' %}
       <div class="row mt-4 justify-content-center">
-            <h4 class="text-danger text-center text-uppercase">You did not type anything!</h4>
+            <h4 class="text-danger text-center">Please enter product information</h4>
       </div>
 
-      {% elif my_form_result=='NotEmpty' %}     
+      {% elif my_form_result=='NotEmpty' %}
+
+      {% if product_available=='Available' %}
 
       <div class="row mt-4 justify-content-center">
             <h4 class="project-category text-white-50">Product found</h4>
@@ -219,7 +220,19 @@
       </div>
     </div>
   </section>
-
+      {% elif product_available=='NotAvailable' %}
+      <div class="row mt-4 justify-content-center">
+            <p><h4 class="text-danger text-center">Thank you for using WineTales</h4></p>
+      </div>
+      <div class="row mt-4 justify-content-center">
+            <p><h4 class="text-danger text-center">Sorry the product entered could not be found</h4></p>
+      </div>
+      <div class="row mt-4 justify-content-center">
+            <p><h4 class="text-white text-center">Here are a few suggested products you can try</h4></p>
+            <p><h4 class="text-white text-center text-uppercase">LCBO# : 68924, Vintage # : 37911, Vintage # : 973453, Vintage # : 534339</h4></p>
+      </div>
+      {% else %}
+      {% endif %}
 
       {% else %}
       {% endif %}      
