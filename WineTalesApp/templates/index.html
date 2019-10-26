@@ -110,9 +110,17 @@
 
       {% if product_available=='Available' %}
 
+      {% if range_found=='Range_notfound' %}
+      <div class="row mt-4 justify-content-center">
+            <h4 class="project-category text-white-50">Could not find similar wines within the set range. Recommendations are given without price limits.</h4>
+      </div>
+
+      {% else %}
+
       <div class="row mt-4 justify-content-center">
             <h4 class="project-category text-white-50">Product found</h4>
       </div>
+      {% endif %}
       <div class="row p-1 m-1 justify-content-center">
             <div class="col-md- w-50 list-group">
                    <ul class="list-group">

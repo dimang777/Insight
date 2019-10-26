@@ -27,6 +27,11 @@ def tag_output():
     id_cate =int(request.args.get('user_input2'))
     id_price =int(request.args.get('user_input3'))
 
+    if id_price == 2:
+        price_range = 10
+    else:
+        price_range = -1
+
     # Case if empty
     if id_num == '':
         return render_template("index.html",
@@ -53,8 +58,14 @@ def tag_output():
         available_flag = rw.check_ifavailable(id_cate_result+str(id_num))
 
         if available_flag:
-            recomm = rw.get_recommendations(id_cate_result+str(id_num))
+            [rangefound, recomm] = rw.get_recommendations(id_cate_result+str(id_num), price_range)
             product_available_str = 'Available'
+            if rangefound:
+                rangefound_str = 'Range_found'
+                print(rangefound_str)
+            else:
+                rangefound_str = 'Range_notfound'
+                print(rangefound_str)
 
             product_dict = rw.get_productinfo_in_dict(rw.get_idx_w_id(id_cate_result+str(id_num)))
             recomm_dict_list = []
@@ -119,7 +130,8 @@ def tag_output():
                                 recomm_product_3_info_variety = 'Variety: ' + recomm_dict_list[2]['Variety'],
                                 recomm_product_3_info_img=recomm_dict_list[2]['Pic_src'],
                                 my_form_result="NotEmpty",
-                                product_available = product_available_str
+                                product_available = product_available_str,
+                                range_found = rangefound_str
                                 )
         else:
             product_available_str = 'NotAvailable'
