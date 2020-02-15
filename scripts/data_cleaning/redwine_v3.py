@@ -20,7 +20,7 @@ class RedWine:
 
         return int(self.__df[self.__df['LCBO_id']==id_to_find].index[0])
 
-    def get_recommendations(self, product_idx_or_id, return_sortedlist = False):
+    def get_recommendations(self, product_idx_or_id, price_range = -1):
         """
         cosine similarity between for all pairs given a product - access hash table
         Input: id of the product
@@ -35,13 +35,30 @@ class RedWine:
         elif isinstance(product_idx_or_id, int):
             product_idx = product_idx_or_id
 
-
-        recommedation_list = list(self.__df_hashtable[product_idx].sort_values().index[1:4])
-        gower_dist_one_sorted = list(self.__df_hashtable[product_idx].sort_values()[1:4])
-        if return_sortedlist:
-            return tuple(recommedation_list), gower_dist_one_sorted
+        withinrange_flag = True # Searching within range or range is not set
+        if price_range == -1:
+            use_pricerange_flag = False
+            recommedation_list = list(self.__df_hashtable[product_idx].sort_values().index[1:4])
         else:
-            return tuple(recommedation_list)
+            # Generate recommendations
+            use_pricerange_flag = True
+            range_selected = price_range
+
+            price_entered = self.__df.loc[product_idx, 'Price']
+            dist_sorted_df = self.__df_hashtable[product_idx].sort_values()
+            price_sorted_df = self.__df.loc[dist_sorted_df.index, 'Price']
+        
+            # When the items within the range are less then 4 including the input wine,
+            # ignore the range. Look at the closest 30 items. 30 is an assumption that
+            # there are at least 30 same varietals
+            if sum(price_sorted_df.head(30).between(price_entered - range_selected, price_entered + range_selected)) < 4 and use_pricerange_flag:
+                withinrange_flag = False
+                recommedation_list = list(dist_sorted_df.index[1:4])
+        
+            else:
+                recommedation_list = list(dist_sorted_df[price_sorted_df.between(price_entered - 10, price_entered + 10)].index[1:4])
+
+        return withinrange_flag, tuple(recommedation_list)
 
     def check_ifavailable(self, product_idx_or_id):
         """
