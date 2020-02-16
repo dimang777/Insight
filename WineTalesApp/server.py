@@ -7,13 +7,12 @@ import sys
 # sys.path.append('/home/ubuntu/application/data')
 
 # Local
-sys.path.insert(0, './data')
-
-import redwine_v3
+# sys.path.insert(0, './data')
+from data import redwine_v3
 
 # Create the application object
 app = Flask(__name__)
-rw = redwine_v3.RedWine('./data/rw_df_mvp_v3.pkl', './data/winetales_cos_dist_df_v2.pkl')
+rw = redwine_v3.RedWine('/data/rw_df_mvp_v3.pkl', '/data/winetales_cos_dist_df_v2.pkl')
 
 @app.route('/',methods=["GET","POST"])
 def home_page():
