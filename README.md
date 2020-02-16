@@ -138,6 +138,7 @@ The web app takes the LCBO product number as an input and outputs the three reco
 ![Web app output](images/Webappoutput.png)
 
 Update: Check out the Docker image of the web-app at https://hub.docker.com/r/dimang777/winetales/tags
+
 You can run the image by using the follwing command.
 
 docker run -p5000:5000 dimang777/winetales:1.000-alpine-local
