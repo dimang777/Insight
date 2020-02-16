@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from flask import Flask, render_template, request
 
-
 import sys
 # Web_app
 # sys.path.append('/home/ubuntu/application/data')
@@ -12,10 +11,11 @@ from data import redwine_v3
 
 # Create the application object
 app = Flask(__name__)
-rw = redwine_v3.RedWine('/data/rw_df_mvp_v3.pkl', '/data/winetales_cos_dist_df_v2.pkl')
+rw = redwine_v3.RedWine('data/rw_df_mvp_v3.pkl', 'data/winetales_cos_dist_df_v2.pkl')
 
 @app.route('/',methods=["GET","POST"])
 def home_page():
+    
     return render_template('index.html')  # render a template
 
 @app.route('/output',methods=["GET"])
@@ -145,7 +145,7 @@ def tag_output():
 # start the server with the 'run()' method
 if __name__ == "__main__":
     # Local
-    app.run(debug=True) #will run locally http://127.0.0.1:5000/
+    app.run(debug=True, host='0.0.0.0') #will run locally http://127.0.0.1:5000/
     # Web_app
     # app.run(host = "0.0.0.0",debug=True) #will run locally http://127.0.0.1:5000/
 
